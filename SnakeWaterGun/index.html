@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A premium animated Snake Water Gun game with retro synthesizer sound effects, scoreboard persistence, and victory streaks.">
+    <title>S.W.G. Arena - Snake Water Gun</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Header Section -->
+        <header>
+            <h1>SWG ARENA</h1>
+            <div class="controls-row">
+                <button id="sound-toggle" class="btn-ctrl">🔊 <span class="toggle-text">Sound: On</span></button>
+                <button id="reset-btn" class="btn-ctrl">🔄 Reset Scores</button>
+            </div>
+        </header>
+
+        <!-- Scoreboard Dashboard -->
+        <section class="scoreboard">
+            <div class="score-card player">
+                <div class="score-label">Player</div>
+                <div id="player-score" class="score-value">0</div>
+            </div>
+            <div class="score-card ties">
+                <div class="score-label">Ties</div>
+                <div id="ties-score" class="score-value">0</div>
+            </div>
+            <div class="score-card computer">
+                <div class="score-label">CPU</div>
+                <div id="computer-score" class="score-value">0</div>
+            </div>
+            <div id="streak-container" class="streak-card">
+                <div class="streak-title">Streak</div>
+                <div id="streak" class="streak-val">0</div>
+            </div>
+        </section>
+
+        <!-- Main Selection Grid -->
+        <main id="choices-grid" class="choices-grid">
+            <div class="choice-card" data-choice="snake">
+                <div class="choice-emoji">🐍</div>
+                <div class="choice-title">Snake</div>
+                <div class="choice-desc">Drinks Water</div>
+            </div>
+            <div class="choice-card" data-choice="water">
+                <div class="choice-emoji">💧</div>
+                <div class="choice-title">Water</div>
+                <div class="choice-desc">Rusts Gun</div>
+            </div>
+            <div class="choice-card" data-choice="gun">
+                <div class="choice-emoji">🔫</div>
+                <div class="choice-title">Gun</div>
+                <div class="choice-desc">Shoots Snake</div>
+            </div>
+        </main>
+
+        <!-- Battle Arena (Hidden by Default) -->
+        <div id="arena" class="arena">
+            <!-- Container for flying lasers, bubbles, and sparks particles -->
+            <div id="particles-container"></div>
+
+            <div class="clash-effect-container">
+                <div id="clash-effect" class="clash-effect"></div>
+            </div>
+
+            <!-- Player Choice Card -->
+            <div class="battle-side">
+                <div class="battle-side-label">You</div>
+                <div id="player-battle-card" class="battle-card player-side">
+                    <div class="card-icon">❓</div>
+                    <div class="card-name">Waiting</div>
+                </div>
+            </div>
+
+            <!-- VS Center Area -->
+            <div class="clash-divider">
+                <div class="vs-text">VS</div>
+                <div class="clash-info">
+                    <div id="clash-status">READY</div>
+                    <div id="clash-sub">Prepare to clash!</div>
+                </div>
+                <div class="play-again-box">
+                    <button id="play-again-btn">Play Again</button>
+                </div>
+            </div>
+
+            <!-- CPU Choice Card -->
+            <div class="battle-side">
+                <div class="battle-side-label">Computer</div>
+                <div id="computer-battle-card" class="battle-card computer-side">
+                    <div class="card-icon">❓</div>
+                    <div class="card-name">Waiting</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History/Log Section -->
+        <section class="history-section">
+            <div class="history-header">
+                <h2 class="history-title">Battle History</h2>
+            </div>
+            <div id="history-list" class="history-list">
+                <!-- Javascript will insert history here -->
+            </div>
+            <div id="no-history" class="no-history-text">
+                No battles fought in this session yet. Choose an element to begin!
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

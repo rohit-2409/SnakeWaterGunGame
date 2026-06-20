@@ -1,0 +1,961 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+    --bg-dark: #07080f;
+    --bg-container: rgba(14, 16, 32, 0.7);
+    --bg-card: rgba(22, 25, 49, 0.55);
+    --border-glow: rgba(255, 255, 255, 0.07);
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --color-snake: #00ff87;
+    --color-water: #00d2ff;
+    --color-gun: #ff007f;
+    --color-tie: #facc15;
+    
+    --snake-gradient: linear-gradient(135deg, #00ff87 0%, #60efff 100%);
+    --water-gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+    --gun-gradient: linear-gradient(135deg, #ff007f 0%, #ff758c 100%);
+    
+    --transition-speed: 0.3s;
+    --border-radius: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Ambient Background Blobs */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(140px);
+    z-index: -2;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+body::before {
+    background: radial-gradient(circle, var(--color-snake) 0%, rgba(0,0,0,0) 70%);
+    top: -10%;
+    left: -10%;
+    animation: floatBlob1 20s infinite alternate ease-in-out;
+}
+
+body::after {
+    background: radial-gradient(circle, var(--color-gun) 0%, rgba(0,0,0,0) 70%);
+    bottom: -10%;
+    right: -10%;
+    animation: floatBlob2 25s infinite alternate ease-in-out;
+}
+
+@keyframes floatBlob1 {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(100px, 80px) scale(1.2); }
+}
+
+@keyframes floatBlob2 {
+    0% { transform: translate(0, 0) scale(1.1); }
+    100% { transform: translate(-120px, -60px) scale(0.9); }
+}
+
+/* Base Container */
+.game-container {
+    background: var(--bg-container);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glow);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 850px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 20px;
+}
+
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, #ffffff 30%, #a1a8c0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+}
+
+.controls-row {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-ctrl {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-ctrl:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.btn-ctrl.sound-disabled {
+    background: rgba(255, 0, 127, 0.1);
+    border-color: rgba(255, 0, 127, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Scoreboard */
+.scoreboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+@media (max-width: 600px) {
+    .scoreboard {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .streak-card {
+        grid-column: span 3;
+    }
+}
+
+.score-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    text-align: center;
+    transition: transform var(--transition-speed);
+}
+
+.score-card:hover {
+    transform: translateY(-3px);
+}
+
+.score-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.score-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.score-card.player { border-bottom: 3px solid var(--color-snake); }
+.score-card.computer { border-bottom: 3px solid var(--color-gun); }
+.score-card.ties { border-bottom: 3px solid var(--text-secondary); }
+
+.streak-card {
+    background: linear-gradient(135deg, rgba(22, 25, 49, 0.55) 0%, rgba(255, 117, 140, 0.05) 100%);
+    border: 1px solid var(--border-glow);
+    border-radius: var(--border-radius);
+    padding: 15px 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all var(--transition-speed);
+}
+
+.streak-card.streak-hot {
+    background: linear-gradient(135deg, rgba(255, 0, 127, 0.15) 0%, rgba(255, 165, 0, 0.15) 100%);
+    border-color: rgba(255, 0, 127, 0.3);
+    animation: hotStreakPulse 1.5s infinite alternate;
+}
+
+@keyframes hotStreakPulse {
+    0% { box-shadow: 0 0 10px rgba(255, 0, 127, 0.1); }
+    100% { box-shadow: 0 0 25px rgba(255, 0, 127, 0.35); }
+}
+
+.streak-title {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.streak-val {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'Orbitron', sans-serif;
+    color: #ff9f43;
+}
+
+.streak-hot .streak-val {
+    background: linear-gradient(to right, #ff3366, #ff9f43);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Choices Grid */
+.choices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 35px;
+    transition: opacity 0.3s ease;
+    perspective: 1000px;
+}
+
+.choice-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glow);
+    border-radius: 20px;
+    padding: 30px 20px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    /* CSS transition for smooth return from mouse moves */
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s ease, border-color 0.3s;
+}
+
+.choice-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.choice-card:hover::before {
+    opacity: 1;
+}
+
+.choice-card .choice-emoji {
+    font-size: 5rem;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+    transform: translateZ(0px);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Float items up in 3D parallax on hover */
+.choice-card:hover .choice-emoji {
+    transform: translateZ(35px) scale(1.15) rotate(5deg);
+}
+
+.choice-card .choice-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    transform: translateZ(0px);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.choice-card:hover .choice-title {
+    transform: translateZ(20px);
+}
+
+.choice-card .choice-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transform: translateZ(0px);
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.choice-card:hover .choice-desc {
+    transform: translateZ(10px);
+}
+
+/* Card Glow Themes on Hover */
+.choice-card[data-choice="snake"]:hover {
+    border-color: var(--color-snake);
+}
+.choice-card[data-choice="snake"] .choice-title { color: var(--color-snake); }
+
+.choice-card[data-choice="water"]:hover {
+    border-color: var(--color-water);
+}
+.choice-card[data-choice="water"] .choice-title { color: var(--color-water); }
+
+.choice-card[data-choice="gun"]:hover {
+    border-color: var(--color-gun);
+}
+.choice-card[data-choice="gun"] .choice-title { color: var(--color-gun); }
+
+
+/* Battle Arena & 3D Stage */
+.arena {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 320px;
+    margin: 20px 0 40px 0;
+    position: relative;
+    gap: 10px;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+.battle-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    transform-style: preserve-3d;
+}
+
+.battle-side-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.battle-card {
+    background: var(--bg-card);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    width: 180px;
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+    transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+}
+
+.battle-card .card-icon {
+    font-size: 5.5rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+    transform: translateZ(25px);
+    transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.battle-card .card-name {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    transform: translateZ(15px);
+}
+
+/* 3D Angled Placements */
+.battle-card.player-side {
+    transform: rotateY(20deg) translateZ(0);
+}
+
+.battle-card.computer-side {
+    transform: rotateY(-20deg) translateZ(0);
+}
+
+/* Center VS Divider */
+.clash-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    z-index: 3;
+}
+
+.vs-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    font-style: italic;
+    background: linear-gradient(180deg, #ffffff 20%, #475569 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(255,255,255,0.15);
+    margin-bottom: 5px;
+    animation: vsPulse 2s infinite alternate;
+}
+
+@keyframes vsPulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.1); opacity: 1; }
+}
+
+.clash-info {
+    text-align: center;
+}
+
+#clash-status {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: 1.5px;
+}
+
+#clash-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    min-height: 36px;
+    max-width: 220px;
+}
+
+/* Play Again Overlay Button */
+.play-again-box {
+    margin-top: 15px;
+    height: 48px;
+}
+
+#play-again-btn {
+    background: linear-gradient(135deg, #00ff87 0%, #60efff 100%);
+    border: none;
+    color: #05060b;
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 4px 15px rgba(0, 255, 135, 0.4);
+    display: none;
+    transition: all 0.3s ease;
+}
+
+#play-again-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 255, 135, 0.6);
+}
+
+/* ==========================================================================
+   ADVANCED FIGHT ANIMATION TIMELINES (CSS TRANSFORMS & KEYFRAMES)
+   ========================================================================== */
+
+/* Particle Canvas Wrapper Overlay */
+#particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.particle.laser-bullet {
+    width: 25px;
+    height: 5px;
+    background: linear-gradient(90deg, #ff007f, #ffffff);
+    border-radius: 3px;
+    box-shadow: 0 0 12px #ff007f, 0 0 25px #ff007f;
+    transform-origin: center;
+    transition: transform 0.25s linear, opacity 0.25s;
+}
+
+.particle.water-droplet {
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #00d2ff 60%, #3a7bd5 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00d2ff;
+    transition: transform 0.4s cubic-bezier(0.1, 0.6, 0.4, 1), opacity 0.4s, scale 0.4s;
+}
+
+.particle.spark {
+    width: 6px;
+    height: 6px;
+    background: #facc15;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #facc15, 0 0 12px #facc15;
+    transition: transform 0.3s cubic-bezier(0.0, 0.7, 0.3, 1), opacity 0.3s, scale 0.3s;
+}
+
+/* MATCHUP A: GUN SHOOTS SNAKE */
+/* Gun recrosses and tilts like a weapon aiming */
+.player-side.gun-aim {
+    transform: rotateY(0deg) translate3d(30px, -15px, 60px) rotateZ(-12deg) scale(1.12);
+    border-color: var(--color-gun);
+    z-index: 6;
+}
+.computer-side.gun-aim {
+    transform: rotateY(0deg) translate3d(-30px, -15px, 60px) rotateZ(12deg) scale(1.12);
+    border-color: var(--color-gun);
+    z-index: 6;
+}
+
+/* Gun recoil firing shake */
+.gun-aim .card-icon {
+    animation: recoilFire 0.12s 6 alternate ease-in-out;
+}
+@keyframes recoilFire {
+    0% { transform: translateZ(25px) translateX(0); }
+    100% { transform: translateZ(10px) translateX(-15px) scale(0.92); }
+}
+
+/* Snake card wiggles in fear */
+.snake-fear {
+    animation: fearWiggle 0.15s infinite;
+}
+@keyframes fearWiggle {
+    0% { transform: scale(0.95) translateZ(-10px) rotateX(5deg); }
+    50% { transform: scale(0.95) translateZ(-10px) rotateX(-5deg) rotateY(3deg); }
+    100% { transform: scale(0.95) translateZ(-10px) rotateX(5deg); }
+}
+
+/* Bullet impact flashes target white-red */
+.hit-flash {
+    animation: flashImpact 0.08s linear;
+    border-color: #ff007f !important;
+    box-shadow: 0 0 30px rgba(255, 0, 127, 0.6) !important;
+}
+@keyframes flashImpact {
+    0% { filter: brightness(3.5) invert(0.1); transform: scale(1.05) translateZ(20px) rotateZ(-4deg); }
+    100% { filter: brightness(1); transform: scale(0.98) translateZ(0); }
+}
+
+/* Defeated card falls backward flat in 3D */
+.card-defeated-gun {
+    transform: rotateX(-75deg) translateY(60px) translateZ(-80px) !important;
+    opacity: 0.25;
+    filter: grayscale(0.8);
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: none !important;
+}
+
+/* MATCHUP B: SNAKE DRINKS WATER */
+/* Snake lunges towards center */
+.player-side.snake-lunge-right {
+    transform: rotateY(0deg) translate3d(130px, 0, 80px) scale(1.15);
+    border-color: var(--color-snake);
+    z-index: 5;
+}
+.computer-side.snake-lunge-left {
+    transform: rotateY(0deg) translate3d(-130px, 0, 80px) scale(1.15);
+    border-color: var(--color-snake);
+    z-index: 5;
+}
+
+/* Snake bite stretch */
+.player-side.snake-lunge-right .card-icon,
+.computer-side.snake-lunge-left .card-icon {
+    animation: snakeGulpAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes snakeGulpAnim {
+    0% { transform: translateZ(25px) scale(1); }
+    30% { transform: translateZ(45px) scaleX(1.3) scaleY(0.7); }
+    60% { transform: translateZ(35px) scaleX(0.7) scaleY(1.3); }
+    100% { transform: translateZ(25px) scale(1); }
+}
+
+/* Water card dissolves and blur fades */
+.water-dissolve {
+    transform: scale(0.2) rotateZ(180deg) translateZ(-150px) !important;
+    opacity: 0 !important;
+    filter: blur(10px) grayscale(0.5) !important;
+    box-shadow: none !important;
+}
+
+/* Snake card grows/glows emerald green */
+.snake-grow {
+    transform: scale(1.2) translateZ(80px) !important;
+    border-color: var(--color-snake) !important;
+    box-shadow: 0 0 45px var(--color-snake) !important;
+}
+
+/* MATCHUP C: WATER RUSTS GUN */
+/* Water tilts forward splashing */
+.player-side.water-tilt-right {
+    transform: rotateY(0deg) translate3d(60px, -20px, 40px) rotateZ(20deg) scale(1.1);
+    border-color: var(--color-water);
+    z-index: 5;
+}
+.computer-side.water-tilt-left {
+    transform: rotateY(0deg) translate3d(-60px, -20px, 40px) rotateZ(-20deg) scale(1.1);
+    border-color: var(--color-water);
+    z-index: 5;
+}
+
+/* Gun wiggles and short circuits */
+.gun-glitch {
+    animation: glitchGiggle 0.06s infinite alternate;
+}
+@keyframes glitchGiggle {
+    0% { transform: translate3d(-3px, 2px, 10px) rotateZ(-1deg) scale(0.98); opacity: 0.9; }
+    100% { transform: translate3d(3px, -2px, 10px) rotateZ(1deg) scale(1.02); opacity: 0.5; filter: brightness(1.8) saturate(2); }
+}
+
+/* Gun turns sepia-rusty and sinks down */
+.gun-rusty {
+    filter: sepia(0.85) hue-rotate(-30deg) brightness(0.55) saturate(1.8) !important;
+    border-color: #8b4513 !important;
+    box-shadow: 0 0 10px rgba(139, 69, 19, 0.3) !important;
+    transform: rotateX(45deg) translateY(20px) translateZ(-40px) !important;
+    opacity: 0.45;
+}
+
+/* MATCHUP D: TIES */
+/* Tie clash motions */
+.clash-left {
+    transform: rotateY(0deg) translate3d(120px, 0, 50px) scale(1.1);
+    z-index: 5;
+}
+
+.clash-right {
+    transform: rotateY(0deg) translate3d(-120px, 0, 50px) scale(1.1);
+    z-index: 5;
+}
+
+/* General Reveal Winner/Loser Cards styling */
+.card-winner {
+    border-width: 3px !important;
+    animation: winningGlow 2s infinite alternate ease-in-out;
+}
+
+.card-winner::after {
+    content: '👑';
+    position: absolute;
+    top: -20px;
+    font-size: 2.2rem;
+    animation: crownBounce 1s infinite alternate;
+}
+
+@keyframes crownBounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+}
+
+@keyframes winningGlow {
+    0% { transform: scale(1.04); box-shadow: 0 0 15px rgba(255,255,255,0.05); }
+    100% { transform: scale(1.06); box-shadow: 0 0 35px currentColor; }
+}
+
+.card-loser {
+    opacity: 0.35;
+    transform: scale(0.9);
+    filter: grayscale(0.8);
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: none !important;
+}
+
+.card-tie {
+    border-color: var(--color-tie) !important;
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.25) !important;
+    transform: scale(1.02);
+}
+
+/* Blastwave clash flash */
+.clash-effect-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.clash-effect {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 10%, rgba(255,255,255,0.8) 40%, rgba(255, 255, 255, 0) 70%);
+    opacity: 0;
+}
+
+.clash-blast {
+    animation: blastWaveAnim 0.35s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes blastWaveAnim {
+    0% { width: 10px; height: 10px; opacity: 1; filter: blur(0px); }
+    100% { width: 450px; height: 450px; opacity: 0; filter: blur(10px); }
+}
+
+/* History Logs */
+.history-section {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 25px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.history-title {
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    animation: slideInDown 0.3s ease;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+@keyframes slideInDown {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.history-outcome-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.result-win {
+    border-left: 3px solid var(--color-snake);
+    background: linear-gradient(to right, rgba(0, 255, 135, 0.03), transparent);
+}
+.result-win .history-outcome-badge {
+    background: rgba(0, 255, 135, 0.15);
+    color: var(--color-snake);
+}
+
+.result-lose {
+    border-left: 3px solid var(--color-gun);
+    background: linear-gradient(to right, rgba(255, 0, 127, 0.03), transparent);
+}
+.result-lose .history-outcome-badge {
+    background: rgba(255, 0, 127, 0.15);
+    color: var(--color-gun);
+}
+
+.result-tie {
+    border-left: 3px solid var(--text-secondary);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.02), transparent);
+}
+.result-tie .history-outcome-badge {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.history-details {
+    flex: 1;
+    color: var(--text-primary);
+    text-align: left;
+    padding-left: 10px;
+}
+
+.history-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.no-history-text {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 15px 0;
+}
+
+/* Helper Animations */
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.fade-in {
+    animation: fadeInAnim 0.3s ease forwards;
+}
+
+@keyframes fadeInAnim {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.pop-animate {
+    animation: scorePopAnim 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes scorePopAnim {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); color: #fff; text-shadow: 0 0 10px currentColor; }
+    100% { transform: scale(1); }
+}
+
+.pulse-button {
+    animation: buttonPulse 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes buttonPulse {
+    0% { box-shadow: 0 4px 15px rgba(0, 255, 135, 0.4); }
+    100% { box-shadow: 0 4px 25px rgba(0, 255, 135, 0.8); }
+}
+
+/* Mobile Responsiveness tweaks */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    .game-container {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    .choice-card {
+        padding: 20px 10px;
+    }
+    
+    .choice-card .choice-emoji {
+        font-size: 4rem;
+    }
+    
+    .arena {
+        flex-direction: column;
+        gap: 20px;
+        min-height: auto;
+    }
+    
+    .battle-card {
+        width: 140px;
+        height: 180px;
+    }
+    
+    .battle-card.player-side, .battle-card.computer-side {
+        transform: rotateX(15deg) translateZ(0); /* rotate forward in stacked layout */
+    }
+    
+    /* Flatten stack movements for mobile */
+    .player-side.gun-aim, .computer-side.gun-aim {
+        transform: rotateX(0deg) translate3d(0, -10px, 40px) scale(1.08);
+    }
+    
+    .player-side.snake-lunge-right {
+        transform: rotateX(0deg) translate3d(0, 60px, 40px) scale(1.1);
+    }
+    
+    .computer-side.snake-lunge-left {
+        transform: rotateX(0deg) translate3d(0, -60px, 40px) scale(1.1);
+    }
+    
+    .player-side.water-tilt-right {
+        transform: rotateX(0deg) translate3d(0, 30px, 20px) rotateZ(5deg);
+    }
+    
+    .computer-side.water-tilt-left {
+        transform: rotateX(0deg) translate3d(0, -30px, 20px) rotateZ(-5deg);
+    }
+    
+    .clash-left {
+        transform: rotateX(0deg) translate3d(0, 50px, 30px);
+    }
+    
+    .clash-right {
+        transform: rotateX(0deg) translate3d(0, -50px, 30px);
+    }
+    
+    .battle-card .card-icon {
+        font-size: 4.5rem;
+    }
+    
+    .clash-divider {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    .vs-text {
+        font-size: 1.8rem;
+    }
+}
