@@ -3,8 +3,7 @@
 An interactive and responsive Snake Water Gun game developed using HTML, CSS, and JavaScript. The game allows users to play against the computer, which makes random choices each round. Results are displayed instantly with a clean and user-friendly interface.
 
 ## 🌐 Live Demo
-
-🔗 **Play the Game Here:: https://rohitsnakewatergun.netlify.app/
+https://rohitsnakewatergun.netlify.app/
 
 ## 🎮 How to Play
 
