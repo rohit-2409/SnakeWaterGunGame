@@ -4,7 +4,7 @@ An interactive and responsive Snake Water Gun game developed using HTML, CSS, an
 
 ## 🌐 Live Demo
 
-🔗 **Play the Game Here:** rohitsnakewatergun.netlify.app
+🔗 **Play the Game Here:: https://rohitsnakewatergun.netlify.app/
 
 ## 🎮 How to Play
 
